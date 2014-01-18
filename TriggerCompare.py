@@ -3,12 +3,13 @@ from fractions import *
 from Hyper_Calculator import *
 
 def dmg3(ht,ct,dt):
-    dmg = 0
-    cdu = 0
+    dmg = 0     # there isn't a point to initilize it, but...
+    sld = 0
+    hin = 0
 
     # Here is the peachiest calculation of them all.
 
-    nt=33       # to make things easier to read
+    nt=33       # to make things easier to read and more consistent w/format
     hththt = Fraction(ht,49)*Fraction(ht-1,48)*Fraction(ht-2,47)
     hthtct = Fraction(ht,49)*Fraction(ht-1,48)*Fraction(ct,47) + Fraction(ht,49)*Fraction(ct,48)*Fraction(ht-1,47) + Fraction(ct,49)*Fraction(ht,48)*Fraction(ht-1,47)
     hthtdt = Fraction(ht,49)*Fraction(ht-1,48)*Fraction(dt,47) + Fraction(ht,49)*Fraction(dt,48)*Fraction(ht-1,47) + Fraction(dt,49)*Fraction(ht,48)*Fraction(ht-1,47)
@@ -30,28 +31,57 @@ def dmg3(ht,ct,dt):
     dtntnt = Fraction(nt,49)*Fraction(nt-1,48)*Fraction(dt,47) + Fraction(nt,49)*Fraction(dt,48)*Fraction(nt-1,47) + Fraction(dt,49)*Fraction(nt,48)*Fraction(nt-1,47)
     ntntnt = Fraction(nt,49)*Fraction(nt-1,48)*Fraction(nt-2,47)
     #20 events total
+##    print(hththt+hthtct+hthtdt+hthtnt+htctct+htctdt+htctnt+htdtdt+htdtnt+\
+##htntnt+ctctct+ctctdt+ctctnt+ctdtdt+ctdtnt+ctntnt+dtdtdt+dtdtnt+dtntnt+ntntnt)
+    #confirm it all adds up to 1
 
-##    total = 0
-##    total +=  hththt+hthtct+hthtdt+hthtnt+htctct+htctdt+htctnt+htdtdt+htdtnt+htntnt+ctctct+ctctdt+ctctnt+ctdtdt+ctdtnt+ctntnt+dtdtdt+dtdtnt+dtntnt+ntntnt
-##    print(total)
-# confirm it all adds up to 1
+    #check damage given
+    dmg += 3*(ctctct+ctctdt+ctctnt+ctdtdt+ctdtnt+ctntnt+dtdtdt+dtdtnt+dtntnt+ntntnt)
+    dmg += 2*(htctct+htctdt+htctnt+htdtdt+htdtnt+htntnt)
+    dmg += 1*(hthtct+hthtdt+hthtnt)
+    dmg += 0*(hththt)                       #for lulz
 
-    #end of part 1
+    #shield saved
+    sld += 3*(hththt+hthtct+hthtdt+htctct+htctdt+htdtdt+ctctct+ctctdt+ctdtdt+dtdtdt)
+    sld += 2*(hthtnt+htctnt+htdtnt+ctctnt+ctdtnt+dtdtnt)
+    sld += 1*(htntnt+dtntnt+ctntnt)
+    sld += 0*(ntntnt)                       # for lulz again
 
-    # To be done next
-    #dmg += 3*ctctct
-    #dmg += 2*(htctct+)
-    #dmg += 1*
+    #cards drawn
+    hin = 3*(dtdtdt) + 2*(htdtdt+ctdtdt+dtdtnt) + 1*(hthtdt+htctdt+htdtnt+ctctdt+ctdtnt+dtntnt)
 
-    return [dmg, cdu]
-
-
+    return [dmg, sld, hin]
 
 def dmg2(ht,ct,dt):
-    return
+    dmg = 0
+    sld = 0
+    hin = 0
+
+    nt=33
+    htht = Fraction(ht,49)*Fraction(ht-1,48)
+    htct = Fraction(ht,49)*Fraction(ct,48) + Fraction(ct,49)*Fraction(ht,48)
+    htdt = Fraction(ht,49)*Fraction(dt,48) + Fraction(dt,49)*Fraction(ht,48)
+    htnt = Fraction(ht,49)*Fraction(nt,48) + Fraction(nt,49)*Fraction(ht,48)
+    ctct = Fraction(ct,49)*Fraction(ct-1,48)
+    ctdt = Fraction(ct,49)*Fraction(dt,48) + Fraction(dt,49)*Fraction(ct,48)
+    ctnt = Fraction(ct,49)*Fraction(nt,48) + Fraction(nt,49)*Fraction(ct,48)
+    dtdt = Fraction(dt,49)*Fraction(dt-1,48)
+    dtnt = Fraction(dt,49)*Fraction(nt,48) + Fraction(nt,49)*Fraction(dt,48)
+    ntnt = Fraction(nt,49)*Fraction(nt-1,48)
+    ##print(htht+htct+htdt+htnt+ctct+ctdt+ctnt+dtdt+dtnt+ntnt)
+    #confirm it all adds up to 1
+
+    dmg += 2*(ctct+ctdt+ctnt+dtdt+dtnt+ntnt)
+    dmg += 1*(htct+htdt+htnt)
+    sld += 2*(htht+htct+htdt+ctct+ctdt+dtdt)
+    sld += 1*(htnt+ctnt+dtnt)
+    hin += 2*(dtdt) + 1*(htdt+ctdt+dtnt)
+
+    return [dmg, sld, hin]
 
 def dmg1(ht,ct,dt):
-    return
+    # shortened cause I'm too lazy
+    return [Fraction(49-ht,49),Fraction(16,49),Fraction(dt,49)]
 
 def r_guardRG(hT,cT,dT,ht,ct,dt):
     # option 1
