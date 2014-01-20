@@ -3,8 +3,9 @@ from fractions import *
 from Hyper_Calculator import *
 
 def dmg3(ht,ct,dt):
+    '''Returns values for the event when 3 damage is taken'''
     dmg = 0     # there isn't a point to initilize it, but...
-    sld = 0
+    sld = []
     hin = 0
 
     # Here is the peachiest calculation of them all.
@@ -39,13 +40,13 @@ def dmg3(ht,ct,dt):
     dmg += 3*(ctctct+ctctdt+ctctnt+ctdtdt+ctdtnt+ctntnt+dtdtdt+dtdtnt+dtntnt+ntntnt)
     dmg += 2*(htctct+htctdt+htctnt+htdtdt+htdtnt+htntnt)
     dmg += 1*(hthtct+hthtdt+hthtnt)
-    dmg += 0*(hththt)                       #for lulz
+    dmg += 0*(hththt)                            ##for lulz
 
     #shield saved
-    sld += 3*(hththt+hthtct+hthtdt+htctct+htctdt+htdtdt+ctctct+ctctdt+ctdtdt+dtdtdt)
-    sld += 2*(hthtnt+htctnt+htdtnt+ctctnt+ctdtnt+dtdtnt)
-    sld += 1*(htntnt+dtntnt+ctntnt)
-    sld += 0*(ntntnt)                       # for lulz again
+    sld.append(3*(hththt+hthtct+hthtdt+htctct+htctdt+htdtdt+ctctct+ctctdt+ctdtdt+dtdtdt))
+    sld.append(2*(hthtnt+htctnt+htdtnt+ctctnt+ctdtnt+dtdtnt))
+    sld.append(1*(htntnt+dtntnt+ctntnt))
+    sld.append(0*(ntntnt))                       ## for lulz again
 
     #cards drawn
     hin = 3*(dtdtdt) + 2*(htdtdt+ctdtdt+dtdtnt) + 1*(hthtdt+htctdt+htdtnt+ctctdt+ctdtnt+dtntnt)
@@ -53,8 +54,9 @@ def dmg3(ht,ct,dt):
     return [dmg, sld, hin]
 
 def dmg2(ht,ct,dt):
+    '''Returns values for the event when 2 damage is taken'''
     dmg = 0
-    sld = 0
+    sld = []
     hin = 0
 
     nt=33
@@ -68,56 +70,77 @@ def dmg2(ht,ct,dt):
     dtdt = Fraction(dt,49)*Fraction(dt-1,48)
     dtnt = Fraction(dt,49)*Fraction(nt,48) + Fraction(nt,49)*Fraction(dt,48)
     ntnt = Fraction(nt,49)*Fraction(nt-1,48)
-    ##print(htht+htct+htdt+htnt+ctct+ctdt+ctnt+dtdt+dtnt+ntnt)
     #confirm it all adds up to 1
+    ##print(htht+htct+htdt+htnt+ctct+ctdt+ctnt+dtdt+dtnt+ntnt)
+
 
     dmg += 2*(ctct+ctdt+ctnt+dtdt+dtnt+ntnt)
     dmg += 1*(htct+htdt+htnt)
-    sld += 2*(htht+htct+htdt+ctct+ctdt+dtdt)
-    sld += 1*(htnt+ctnt+dtnt)
+    sld.append(2*(htht+htct+htdt+ctct+ctdt+dtdt))
+    sld.append(1*(htnt+ctnt+dtnt))
     hin += 2*(dtdt) + 1*(htdt+ctdt+dtnt)
 
     return [dmg, sld, hin]
 
 def dmg1(ht,ct,dt):
+    '''Returns values for the event when 1 damage is taken'''
     # shortened cause I'm too lazy
     return [Fraction(49-ht,49),Fraction(16,49),Fraction(dt,49)]
 
+def drive(hT,cT,dT):
+    '''Returns values for the twin drive'''
+    # Drive check odds.
+    hThT = Fraction(hT,49)*Fraction(hT-1,48)
+    hTcT = Fraction(hT,49)*Fraction(cT,48)+Fraction(cT,49)*Fraction(hT,48)
+    hTdT = Fraction(hT,49)*Fraction(dT,48)+Fraction(dT,49)*Fraction(hT,48)
+    hTnT = Fraction(hT,49)*Fraction(33,48)+Fraction(33,49)*Fraction(hT,48)
+    cTcT = Fraction(cT,49)*Fraction(cT-1,48)
+    cTdT = Fraction(cT,49)*Fraction(dT,48)+Fraction(dT,49)*Fraction(cT,48)
+    cTnT = Fraction(cT,49)*Fraction(33,48)+Fraction(33,49)*Fraction(cT,48)
+    dTdT = Fraction(dT,49)*Fraction(dT-1,48)
+    dTnT = Fraction(dT,49)*Fraction(33,48)+Fraction(33,49)*Fraction(dT,48)
+    nTnT = Fraction(22,49)
+    #repackage the odds as a list.
+    drive = [hThT,hTcT,hTdT,hTnT,cTcT,cTdT,cTnT,dTdT,dTnT,nTnT]
+    # confirm it all adds up to 1
+    ##    total = 0
+    ##    for i in range(0,10): total += drive[i]
+    ##    print(total)
+
+    deal = [] #damage dealt
+    deal.append(nTnT+ dTnT + dTdT + hTdT + hTnT + hThT)
+    deal.append(hTcT + cTdT + cTnT)
+    deal.append(cTcT)
+
+    dmgh = 2*hThT + hTcT + hTdT + hTnT    #damage healed
+    drw = 2*dTdT + hTdT + cTdT + dTnT     #cards drawn
+
+    return [deal,dmgh,drw,drive]
+
 def r_guardRG(hT,cT,dT,ht,ct,dt):
-    # option 1
+    '''returns expected outcome for RVR and guarding the first rearguard attack'''
+    # initialize all the variables
+    drivecheck = drive(hT,cT,dT)
+    state = [0,0,0,0,0]
+    d1 = dmg1(ht,ct,dt)
+    d2 = dmg2(ht,ct,dt)
+    d3 = dmg3(ht,ct,dt)
 
-    cid = 0     #Change in damage
-    cu = 0      #Cards used
+    # for all events that dealt 3 damage, find actual damage
+    state[0] += drivecheck[0][0]*d1[0] ##lol
+    state[0] += drivecheck[0][1]*d2[0]
+    state[0] += drivecheck[0][2]*d3[0]
 
-    drive = []
-    drive.append(Fraction(hT,49)*Fraction(hT-1,48))
-    drive.append(Fraction(hT,49)*Fraction(cT,48)+Fraction(cT,49)*Fraction(hT,48))
-    drive.append(Fraction(hT,49)*Fraction(dT,48)+Fraction(dT,49)*Fraction(hT,48))
-    drive.append(Fraction(hT,49)*Fraction(33,48)+Fraction(33,49)*Fraction(hT,48))
-    drive.append(Fraction(cT,49)*Fraction(cT-1,48))
-    drive.append(Fraction(cT,49)*Fraction(dT,48)+Fraction(dT,49)*Fraction(cT,48))
-    drive.append(Fraction(cT,49)*Fraction(33,48)+Fraction(33,49)*Fraction(cT,48))
-    drive.append(Fraction(dT,49)*Fraction(dT-1,48))
-    drive.append(Fraction(dT,49)*Fraction(33,48)+Fraction(33,49)*Fraction(dT,48))
-    drive.append(Fraction(22,49))
-    # Appended drive checks in order (start at 0!):
-    # hThT, hTcT, hTdT, hTnT, cTcT, cTdT, cTnT, dTdT, dTnT, nTnT
 
-##    total = 0
-##    for i in range(0,10): total += drive[i]
-##    print(total)
-# confirm it all adds up to 1
-
-    state = [] # contains 2 varibles, one for dmg and another for cards used
-    dmg3(ht,ct,dt)
-    dmg2(ht,ct,dt)
-    dmg1(ht,ct,dt)
-
-    return
+    state[3] = drivecheck[1]    # Calculate damage you recovered
+    state[4] = drivecheck[2]    # Calculate extra amount of cards drawn.
+    return state
 
 def rvr(hT,cT,dT,ht,ct,dt):
     # guard first rear
-    r_guardRG(hT,cT,dT,ht,ct,dt)
+    guardrear = r_guardRG(hT,cT,dT,ht,ct,dt)
+    print("Attack |Defensive Measure |DMG done |Cards loss |Shield loss |DMG you heal |Cards you gain")
+    print("R>V>R  |Guard Rearguard   |{}       |           |            |{}           |{}".format(guardrear[0],guardrear[3],guardrear[4]))
 
 ##    r_guardVG(hT,cT,dT,ht,ct,dt)
     return
@@ -132,21 +155,31 @@ def rvr(hT,cT,dT,ht,ct,dt):
 def compareTrig(a,b,c,d,e,f):
     '''Prints delta cards/damage of competing trigger lineups
 
-    this section is broken in the following manner:
-    Two possible attack formations, R>V>R and V>R>R-P*,
-        (since they are clearly better then R>R>V)
-    Each formation will have two revelant defensive options
-        (the third one is neglegible)
-    Each option breaks down the kinds of triggers you check in twin drive
-        (Double Crit, 1 Heal and 1 Draw, etc)
-    It is furthur broken down to each individual damage check
-        (3 heals in a row, one draw)
-    The probabilty of each event, and its state is recorded and multiplied out,
-    until the result is reached.
+    [a]:               Number of Heal Triggers in your deck
+    [b]:           Number of Critical Triggers in your deck
+    [c]:               Number of Draw Triggers in your deck
+    [d]:     Number of Heal Triggers in your opponents deck
+    [e]: Number of Critical Triggers in your opponents deck
+    [f]:     Number of Draw Triggers in your opponents deck
+    '''
 
-    This function eventually prints out a 5 x 3 table containing eight values,
-    4 being the delta damage for each offensive+defense plan,
-    while the other 4 is for the delta cards used by the opponent.
+    '''
+    The methodology of how compareTrig finds thes values is done like this:
+        We break it down into individual sets
+    > Two possible attack formations, R>V>R and V>R>R-P*,
+        (since they are clearly better then R>R>V)
+    >> Each formation will have two revelant defensive options
+        (the third one is neglegible)
+    >>>Each option breaks down the kinds of triggers you check in twin drive
+        (Double Crit, 1 Heal and 1 Draw, etc)
+    >>>>It is furthur broken down to individual drive and damage checks
+        (3 heals in a row, one draw)
+    >>>>>Odds of each event, and its state is recorded and multiplied out
+    > Back to here, to print the result
+
+    This function eventually prints out a 5 x 5 table containing eight values,
+    4 alloted for each ∆damage,∆cards and shield for every offensive and
+    defensive plan I covered.
     '''
     rvr(a,b,c,d,e,f)
 ##    vrr(a,b,c,d,e,f)
