@@ -148,13 +148,12 @@ def r_guardRG(hT,cT,dT,ht,ct,dt):
     state[1] -= recover
 
     # find out shield loss for different events
-    state[2] += 2               # for guarding the first rearguard
-    state[2] += (drivecheck[0][0][0])*((1-d1[1])*2+d1[1]*1)
-    state[2] += (drivecheck[0][0][1])*((1-d1[1])*3+d1[1]*2)
-    state[2] += (drivecheck[0][0][2])*((1-d1[1])*4+d1[1]*3)
-    state[2] += (drivecheck[0][1][1])*(d2[1][0]*3+d2[1][1]*2+d2[1][2]*1)
-    state[2] += (drivecheck[0][1][2])*(d2[1][0]*4+d2[1][1]*3+d2[1][2]*2)
-    state[2] += (drivecheck[0][2][2])*(d3[1][0]*4+d3[1][1]*3+d3[1][2]*2+d3[1][3]*1)
+    state[2] += (drivecheck[0][0][0])*(3+(1-d1[1])*2+d1[1]*1)
+    state[2] += (drivecheck[0][0][1])*(3+(1-d1[1])*3+d1[1]*2)
+    state[2] += (drivecheck[0][0][2])*(3+(1-d1[1])*4+d1[1]*3)
+    state[2] += (drivecheck[0][1][1])*(3+d2[1][0]*3+d2[1][1]*2+d2[1][2]*1)
+    state[2] += (drivecheck[0][1][2])*(3+d2[1][0]*4+d2[1][1]*3+d2[1][2]*2)
+    state[2] += (drivecheck[0][2][2])*(3+d3[1][0]*4+d3[1][1]*3+d3[1][2]*2+d3[1][3]*1)
     state[2] *= 5000            # to convert from stage notation to shield value
 
     state[3] = drivecheck[1]    # Calculate damage you recovered
@@ -174,8 +173,8 @@ def r_guardVG(hT,cT,dT,ht,ct,dt):
     state[0] += d1[0]
 
     # find out card loss for different events
-    y = dmg1[1]             # get damage trigger
-    n = 1-dmg1[1]           # no damage trigger
+    y = d1[1]             # get damage trigger
+    n = 1-d1[1]           # no damage trigger
     state[1] += (drivecheck[0][0][0])*(n*3+y*2)
     state[1] += (drivecheck[0][0][1])*(n*4+y*2)
     state[1] += (drivecheck[0][0][2])*(n*4+y*3)
@@ -196,13 +195,14 @@ def r_guardVG(hT,cT,dT,ht,ct,dt):
     state[2] += (drivecheck[0][1][1])*(n*6+y*4)
     state[2] += (drivecheck[0][1][2])*(n*7+y*5)
     state[2] += (drivecheck[0][2][2])*(n*7+y*5)
+    state[2] *= 5000
 
     state[3] = drivecheck[1]    # Calculate damage you recovered
     state[4] = drivecheck[2]    # Calculate extra amount of cards drawn.
     return state
 
 def v_guardRG(hT,cT,dT,ht,ct,dt):
-    '''returns expected outcome for VRR and guarding the first rearguard attack'''
+    '''returns expected outcome for VRR and guarding both rearguards'''
     # initialize all the variables
     drivecheck = drive(hT,cT,dT)
     state = [0,0,0,0,0]
@@ -211,18 +211,17 @@ def v_guardRG(hT,cT,dT,ht,ct,dt):
     d3 = dmg3(ht,ct,dt)
 
     # for all events that dealt x damage, find actual damage
-    state[0] += drivecheck[0][0][3]*d1[0] ##drive check no crits
+    state[0] += drivecheck[0][0][3]*d1[0]
     state[0] += drivecheck[0][1][3]*d2[0]
     state[0] += drivecheck[0][2][3]*d3[0]
 
     # find out card loss for different events
-    state[1] += 1 # for guarding the first rearguard
-    state[1] += (drivecheck[0][0][0])*(1)
-    state[1] += (drivecheck[0][0][1])*((1-d1[1])*2+d1[1])
-    state[1] += (drivecheck[0][0][2])*(2)
-    state[1] += (drivecheck[0][1][1])*((d2[1][0])*2+(d2[1][1]+d2[1][2])*1)
-    state[1] += (drivecheck[0][1][2])*((d2[1][0]+d2[1][1])*2+(d2[1][2])*1)
-    state[1] += (drivecheck[0][2][2])*((d3[1][0]+d3[1][1])*2+(d3[1][2]+d3[1][3])*1)
+    state[1] += (drivecheck[0][0][0])*(2)
+    state[1] += (drivecheck[0][0][1])*((1-d1[1])*3+d1[1]*2)
+    state[1] += (drivecheck[0][0][2])*(3)
+    state[1] += (drivecheck[0][1][1])*((d2[1][0])*3+(d2[1][1]+d2[1][2])*2)
+    state[1] += (drivecheck[0][1][2])*((d2[1][0]+d2[1][1])*3+(d2[1][2])*2)
+    state[1] += (drivecheck[0][2][2])*((d3[1][0]+d3[1][1])*3+(d3[1][2]+d3[1][3])*2)
 
     # find how many cards are recovered to get the total card loss
     recover = 0
@@ -232,14 +231,54 @@ def v_guardRG(hT,cT,dT,ht,ct,dt):
     state[1] -= recover
 
     # find out shield loss for different events
-    state[2] += 2               # for guarding the first rearguard
-    state[2] += (drivecheck[0][0][0])*((1-d1[1])*2+d1[1]*1)
-    state[2] += (drivecheck[0][0][1])*((1-d1[1])*3+d1[1]*2)
-    state[2] += (drivecheck[0][0][2])*((1-d1[1])*4+d1[1]*3)
-    state[2] += (drivecheck[0][1][1])*(d2[1][0]*3+d2[1][1]*2+d2[1][2]*1)
-    state[2] += (drivecheck[0][1][2])*(d2[1][0]*4+d2[1][1]*3+d2[1][2]*2)
-    state[2] += (drivecheck[0][2][2])*(d3[1][0]*4+d3[1][1]*3+d3[1][2]*2+d3[1][3]*1)
+    state[2] += (drivecheck[0][0][0])*((1-d1[1])*4+d1[1]*2)
+    state[2] += (drivecheck[0][0][1])*((1-d1[1])*5+d1[1]*3)
+    state[2] += (drivecheck[0][0][2])*((1-d1[1])*6+d1[1]*4)
+    state[2] += (drivecheck[0][1][1])*(d2[1][0]*5+d2[1][1]*3+d2[1][2]*1)
+    state[2] += (drivecheck[0][1][2])*(d2[1][0]*6+d2[1][1]*4+d2[1][2]*2)
+    state[2] += (drivecheck[0][2][2])*(d3[1][0]*6+d3[1][1]*4+d3[1][2]*2+d3[1][3]*1)
     state[2] *= 5000            # to convert from stage notation to shield value
+
+    state[3] = drivecheck[1]    # Calculate damage you recovered
+    state[4] = drivecheck[2]    # Calculate extra amount of cards drawn.
+    return state
+
+def v_guardVG(hT,cT,dT,ht,ct,dt):
+    '''returns expected outcome for VRR and guarding the vanguard attack'''
+    # initialize all the variables
+    drivecheck = drive(hT,cT,dT)
+    state = [0,0,0,0,0]
+    d1 = dmg1(ht,ct,dt)
+    d2 = dmg2(ht,ct,dt)
+    d3 = dmg3(ht,ct,dt)
+
+    # find damage
+    state[0] += d1[0]
+
+    # find out card loss for different events
+    y = d1[1]             # get damage trigger
+    n = 1-d1[1]           # no damage trigger
+    state[1] += (drivecheck[0][0][0])*(3)
+    state[1] += (drivecheck[0][0][1])*(n*4+y*3)
+    state[1] += (drivecheck[0][0][2])*(4)
+    state[1] += (drivecheck[0][1][1])*(4)
+    state[1] += (drivecheck[0][1][2])*(4)
+    state[1] += (drivecheck[0][2][2])*(4)
+
+    # find how many cards are recovered to get the total card loss
+    recover = 0
+    recover += d1[2]
+    state[1] -= recover
+
+    # find out shield loss for different events
+    ## Using y and n from before
+    state[2] += (drivecheck[0][0][0])*(3+n*2+y*1)
+    state[2] += (drivecheck[0][0][1])*(3+n*3+y*2)
+    state[2] += (drivecheck[0][0][2])*(3+n*4+y*3)
+    state[2] += (drivecheck[0][1][1])*(3+3)
+    state[2] += (drivecheck[0][1][2])*(3+4)
+    state[2] += (drivecheck[0][2][2])*(3+4)
+    state[2] *= 5000
 
     state[3] = drivecheck[1]    # Calculate damage you recovered
     state[4] = drivecheck[2]    # Calculate extra amount of cards drawn.
@@ -254,10 +293,10 @@ def rvr(hT,cT,dT,ht,ct,dt):
 
 def vrr(hT,cT,dT,ht,ct,dt):
     # guard lower critical rg
-    v_guardRG(hT,cT,dT,ht,ct,dt)
+    guardrear = v_guardRG(hT,cT,dT,ht,ct,dt)
     #guard vanguard
-##    v_guardVG(hT,cT,dT,ht,ct,dt)
-    return
+    guardvan = v_guardVG(hT,cT,dT,ht,ct,dt)
+    return [guardrear,guardvan]
 
 def compareTrig(a,b,c,d,e,f):
     '''Prints delta cards/damage of competing trigger lineups
@@ -285,14 +324,20 @@ def compareTrig(a,b,c,d,e,f):
     > Back to here, to print the result
 
     This function eventually prints out a 5 x 5 table containing eight values,
-    4 alloted for each âˆ†damage,âˆ†cards and shield for every offensive and
+    4 alloted for each dealta damage,delta cards and shield for every offensive and
     defensive plan I covered.
     '''
     r = rvr(a,b,c,d,e,f)
-    ##    vrr(a,b,c,d,e,f)
-    print("Attack |Defensive Measure |DMG done |Cards loss |Shield loss |DMG you heal |Cards you gain")
-    print("R>V>R  |Guard Rearguard   |{}       |{}         |{}          |{}           |{}".format(r[0][0],r[0][1],r[0][2],r[0][3],r[0][4]))
-    print("R>V>R  |Guard Vanguard    |{}       |{}         |{}          |{}           |{}".format(r[1][0],r[1][1],r[1][2],r[1][3],r[1][4]))
+    v = vrr(a,b,c,d,e,f)
+    print("Attack |Defensive Measure |DMG done |Card loss |Shield loss |DMG you heal |Cards you gain")
+    print("R>V>R  |Guard Rearguard   |{:^7.3}  |{:^8.3}  |   {:.5}*   |{:^8.2}     |{:^11}     "\
+    .format(float(r[0][0]),float(r[0][1]),r[0][2],float(r[0][3]),float(r[0][4])))
+    print("R>V>R  |Guard Vanguard    |{:^7.3}  |{:^8.3}  |   {:.5}    |{:^8.2}     |{:^11}     "\
+    .format(float(r[1][0]),float(r[1][1]),r[1][2],float(r[1][3]),float(r[1][4])))
+    print("V>R>R  |Guard Rearguard   |{:^7.3}  |{:^8.3}  |   {:.5}    |{:^8.2}     |{:^11}     "\
+    .format(float(v[0][0]),float(v[0][1]),v[0][2],float(v[0][3]),float(v[0][4])))
+    print("V>R>R  |Guard Vanguard    |{:^7.3}  |{:^8.3}  |   {:.5}*   |{:^8.2}     |{:^11}     "\
+    .format(float(v[1][0]),float(v[1][1]),v[1][2],float(v[1][3]),float(v[1][4])))
     return
 
 def assume():
