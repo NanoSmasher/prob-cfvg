@@ -1,4 +1,4 @@
 prob-cfvg
 =========
 
-Probability modules for card games. Includes specialized modules for Cardfigth!! Vanguard.
+Probability modules for card games. Includes specialized modules for Cardfight!! Vanguard.
