@@ -1,7 +1,16 @@
+#-------------------------------------------------------------------------------
+# Copyright:   (c) Nanosmasher 2014
+# Licence:     The MIT License (MIT)
+#-------------------------------------------------------------------------------
+
 import math
 from fractions import *
+from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+## all modules are natively included in python
 
-################################################################################
+#-------------------------------------------------------------------------------
 #
 #    Start of Calculations.
 #
@@ -30,7 +39,7 @@ from fractions import *
 #    4 alloted for each dealt damage,delta cards and shield for every offensive
 #    and defensive plan I covered.
 #
-################################################################################
+#-------------------------------------------------------------------------------
 
 
 def dmg3(ht,ct,dt):
@@ -39,8 +48,7 @@ def dmg3(ht,ct,dt):
     sld = []
     hin = 0
 
-    # Here is the peachiest calculation of them all.
-
+    ## Here is the peachiest calculation of them all.
     nt=33       # to make things easier to read and more consistent w/format
     hththt = Fraction(ht,49)*Fraction(ht-1,48)*Fraction(ht-2,47)
     hthtct = Fraction(ht,49)*Fraction(ht-1,48)*Fraction(ct,47) + Fraction(ht,49)*Fraction(ct,48)*Fraction(ht-1,47) + Fraction(ct,49)*Fraction(ht,48)*Fraction(ht-1,47)
@@ -133,7 +141,7 @@ def drive(hT,cT,dT):
     dTnT = Fraction(dT,49)*Fraction(33,48)+Fraction(33,49)*Fraction(dT,48)
     nTnT = Fraction(22,49)
     #repackage the odds as a list.
-    drive = [hThT,hTcT,hTdT,hTnT,cTcT,cTdT,cTnT,dTdT,dTnT,nTnT]
+    drive = [hThT,hTcT,hTdT,hTnT,cTcT,cTdT,cTnT,dTdT,dTnT,nTnT] #useless
     # confirm it all adds up to 1
     ##    total = 0
     ##    for i in range(0,10): total += drive[i]
@@ -354,14 +362,12 @@ def compareTrig(a,b,c,d,e,f):
     .format(float(v[1][0]),float(v[1][1]),(int)(v[1][2]),float(v[1][3]),float(v[1][4])))
     return
 
-################################################################################
+#-------------------------------------------------------------------------------
 #
 #           End of Calculations. Start of User Interface.
 #
-################################################################################
+#-------------------------------------------------------------------------------
 
-from tkinter import *
-from tkinter import ttk
 
 def calculate(*args):
     try:
@@ -371,30 +377,31 @@ def calculate(*args):
         e = (int)(fcrit.get())
         d = (int)(fheal.get())
         f = (int)(fdraw.get())
-        if (a+b+c != 16 | d+e+f != 16): err.set("ERROR: not 16 triggers")
+        if (a+b+c != 16 or d+e+f != 16):
+            err.set("ERROR: not 16 triggers")
         else:
             r = rvr(a,b,c,d,e,f)
             v = vrr(a,b,c,d,e,f)
-            dam1.set(float(r[0][0]))
-            car1.set(float(r[0][1]))
-            shi1.set(float(r[0][2]))
-            dam2.set(float(r[1][0]))
-            car2.set(float(r[1][1]))
-            shi2.set(float(r[1][2]))
-            dam3.set(float(v[0][0]))
-            car3.set(float(v[0][1]))
-            shi3.set(float(v[0][2]))
-            dam4.set(float(v[1][0]))
-            car4.set(float(v[1][1]))
-            shi4.set(float(v[1][2]))
-            hea.set(float(r[0][3]))
-            gai.set(float(r[0][4]))
+            dam1.set(round(float(r[0][0]),3))
+            car1.set(round(float(r[0][1]),3))
+            shi1.set(round(float(r[0][2]),3))
+            dam2.set(round(float(r[1][0]),3))
+            car2.set(round(float(r[1][1]),3))
+            shi2.set(round(float(r[1][2]),3))
+            dam3.set(round(float(v[0][0]),3))
+            car3.set(round(float(v[0][1]),3))
+            shi3.set(round(float(v[0][2]),3))
+            dam4.set(round(float(v[1][0]),3))
+            car4.set(round(float(v[1][1]),3))
+            shi4.set(round(float(v[1][2]),3))
+            heal.set(round(float(r[0][3]),3))
+            gain.set(round(float(r[0][4]),3))
             err.set("")
     except ValueError:
         err.set("ERROR: Non-numerical Input")
         pass
 
-from tkinter import messagebox
+
 def assume(*args):
     try:
         messagebox.showinfo("Assumptions","""
@@ -405,7 +412,6 @@ def assume(*args):
         2/2/2 field
         Deck is sufficiently randomized
         Opponent guards optimally
-        End of assumptions
 
     MADE BY
         Brampton Booster
@@ -413,6 +419,7 @@ def assume(*args):
         bramptonbooster.wordpress.com
         https://github.com/NanoSmasher/prob-cfvg
         bramptonbooster@hotmail.ca
+        Copyright 2014
 
     THANKS FOR USING MY PROGRAM!
         """)
@@ -484,8 +491,8 @@ shi3 = StringVar()
 dam4 = StringVar()
 car4 = StringVar()
 shi4 = StringVar()
-hea = StringVar()
-gai = StringVar()
+heal = StringVar()
+gain = StringVar()
 err = StringVar()
 
 ttk.Label(mainframe, textvariable=dam1).grid(column=3, row=6)
@@ -500,8 +507,8 @@ ttk.Label(mainframe, textvariable=shi3).grid(column=5, row=8)
 ttk.Label(mainframe, textvariable=dam4).grid(column=3, row=9)
 ttk.Label(mainframe, textvariable=car4).grid(column=4, row=9)
 ttk.Label(mainframe, textvariable=shi4).grid(column=5, row=9)
-ttk.Label(mainframe, textvariable=hea).grid(column=2, row=11)
-ttk.Label(mainframe, textvariable=gai).grid(column=2, row=12)
+ttk.Label(mainframe, textvariable=heal).grid(column=2, row=11)
+ttk.Label(mainframe, textvariable=gain).grid(column=2, row=12)
 ttk.Label(mainframe, textvariable=err).grid(column=5, row=11)
 
 # Button and Finishing Touches
@@ -512,4 +519,4 @@ root.bind('<Return>', calculate)
 you_c.focus()
 ##
 
-root.mainloop()
+root.mainloop()     #let's start!
