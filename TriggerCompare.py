@@ -1,6 +1,38 @@
 import math
 from fractions import *
 
+################################################################################
+#
+#    Start of Calculations.
+#
+#
+#    The methodology of how compareTrig finds thes values is done like this:
+#
+#        We break it down into individual sets
+#    > Two possible attack formations, R>V>R and V>R>R-P*,
+#        (since they are clearly better then R>R>V)
+#
+#    >> Each formation will have two revelant defensive options
+#        (the third one is neglegible)
+#
+#    >>>Each option breaks down the kinds of triggers you check in twin drive
+#        (Double Crit, 1 Heal and 1 Draw, etc)
+#
+#    >>>>It is furthur broken down to individual drive and damage checks
+#        (3 heals in a row, one draw)
+#
+#    >>>>>Odds of each event, and its state is recorded and multiplied out
+#
+#
+#    > Back to here, to print the result
+#
+#    This function eventually prints out a 5 x 5 table containing eight values,
+#    4 alloted for each dealt damage,delta cards and shield for every offensive
+#    and defensive plan I covered.
+#
+################################################################################
+
+
 def dmg3(ht,ct,dt):
     '''Returns values for the event when 3 damage is taken'''
     dmg = 0     # there isn't a point to initilize it, but...
@@ -31,8 +63,8 @@ def dmg3(ht,ct,dt):
     dtntnt = Fraction(nt,49)*Fraction(nt-1,48)*Fraction(dt,47) + Fraction(nt,49)*Fraction(dt,48)*Fraction(nt-1,47) + Fraction(dt,49)*Fraction(nt,48)*Fraction(nt-1,47)
     ntntnt = Fraction(nt,49)*Fraction(nt-1,48)*Fraction(nt-2,47)
     #20 events total
-##    print(hththt+hthtct+hthtdt+hthtnt+htctct+htctdt+htctnt+htdtdt+htdtnt+\
-##htntnt+ctctct+ctctdt+ctctnt+ctdtdt+ctdtnt+ctntnt+dtdtdt+dtdtnt+dtntnt+ntntnt)
+    ##    print(hththt+hthtct+hthtdt+hthtnt+htctct+htctdt+htctnt+htdtdt+htdtnt+\
+    ##htntnt+ctctct+ctctdt+ctctnt+ctdtdt+ctdtnt+ctntnt+dtdtdt+dtdtnt+dtntnt+ntntnt)
     #confirm it all adds up to 1
 
     #check damage given
@@ -148,13 +180,14 @@ def r_guardRG(hT,cT,dT,ht,ct,dt):
     state[1] -= recover
 
     # find out shield loss for different events
-    state[2] += (drivecheck[0][0][0])*(3+(1-d1[1])*2+d1[1]*1)
-    state[2] += (drivecheck[0][0][1])*(3+(1-d1[1])*3+d1[1]*2)
-    state[2] += (drivecheck[0][0][2])*(3+(1-d1[1])*4+d1[1]*3)
-    state[2] += (drivecheck[0][1][1])*(3+d2[1][0]*3+d2[1][1]*2+d2[1][2]*1)
-    state[2] += (drivecheck[0][1][2])*(3+d2[1][0]*4+d2[1][1]*3+d2[1][2]*2)
-    state[2] += (drivecheck[0][2][2])*(3+d3[1][0]*4+d3[1][1]*3+d3[1][2]*2+d3[1][3]*1)
-    state[2] *= 5000            # to convert from stage notation to shield value
+    state[2] += 2
+    state[2] += (drivecheck[0][0][0])*((1-d1[1])*2+d1[1]*1)
+    state[2] += (drivecheck[0][0][1])*((1-d1[1])*3+d1[1]*2)
+    state[2] += (drivecheck[0][0][2])*((1-d1[1])*4+d1[1]*3)
+    state[2] += (drivecheck[0][1][1])*(d2[1][0]*3+d2[1][1]*2+d2[1][2]*1)
+    state[2] += (drivecheck[0][1][2])*(d2[1][0]*4+d2[1][1]*3+d2[1][2]*2)
+    state[2] += (drivecheck[0][2][2])*(d3[1][0]*4+d3[1][1]*3+d3[1][2]*2+d3[1][3]*1)
+    state[2] *= 5000
 
     state[3] = drivecheck[1]    # Calculate damage you recovered
     state[4] = drivecheck[2]    # Calculate extra amount of cards drawn.
@@ -237,7 +270,7 @@ def v_guardRG(hT,cT,dT,ht,ct,dt):
     state[2] += (drivecheck[0][1][1])*(d2[1][0]*5+d2[1][1]*3+d2[1][2]*1)
     state[2] += (drivecheck[0][1][2])*(d2[1][0]*6+d2[1][1]*4+d2[1][2]*2)
     state[2] += (drivecheck[0][2][2])*(d3[1][0]*6+d3[1][1]*4+d3[1][2]*2+d3[1][3]*1)
-    state[2] *= 5000            # to convert from stage notation to shield value
+    state[2] *= 5000
 
     state[3] = drivecheck[1]    # Calculate damage you recovered
     state[4] = drivecheck[2]    # Calculate extra amount of cards drawn.
@@ -256,10 +289,8 @@ def v_guardVG(hT,cT,dT,ht,ct,dt):
     state[0] += d1[0]
 
     # find out card loss for different events
-    y = d1[1]             # get damage trigger
-    n = 1-d1[1]           # no damage trigger
     state[1] += (drivecheck[0][0][0])*(3)
-    state[1] += (drivecheck[0][0][1])*(n*4+y*3)
+    state[1] += (drivecheck[0][0][1])*(3)
     state[1] += (drivecheck[0][0][2])*(4)
     state[1] += (drivecheck[0][1][1])*(4)
     state[1] += (drivecheck[0][1][2])*(4)
@@ -271,13 +302,13 @@ def v_guardVG(hT,cT,dT,ht,ct,dt):
     state[1] -= recover
 
     # find out shield loss for different events
-    ## Using y and n from before
-    state[2] += (drivecheck[0][0][0])*(3+n*2+y*1)
-    state[2] += (drivecheck[0][0][1])*(3+n*3+y*2)
-    state[2] += (drivecheck[0][0][2])*(3+n*4+y*3)
-    state[2] += (drivecheck[0][1][1])*(3+3)
-    state[2] += (drivecheck[0][1][2])*(3+4)
-    state[2] += (drivecheck[0][2][2])*(3+4)
+    state[2] += 3
+    state[2] += (drivecheck[0][0][0])*(2)
+    state[2] += (drivecheck[0][0][1])*(2)
+    state[2] += (drivecheck[0][0][2])*(2)
+    state[2] += (drivecheck[0][1][1])*(3)
+    state[2] += (drivecheck[0][1][2])*(4)
+    state[2] += (drivecheck[0][2][2])*(4)
     state[2] *= 5000
 
     state[3] = drivecheck[1]    # Calculate damage you recovered
@@ -309,57 +340,176 @@ def compareTrig(a,b,c,d,e,f):
     [f]:     Number of Draw Triggers in your opponents deck
     '''
 
-    '''
-    The methodology of how compareTrig finds thes values is done like this:
-        We break it down into individual sets
-    > Two possible attack formations, R>V>R and V>R>R-P*,
-        (since they are clearly better then R>R>V)
-    >> Each formation will have two revelant defensive options
-        (the third one is neglegible)
-    >>>Each option breaks down the kinds of triggers you check in twin drive
-        (Double Crit, 1 Heal and 1 Draw, etc)
-    >>>>It is furthur broken down to individual drive and damage checks
-        (3 heals in a row, one draw)
-    >>>>>Odds of each event, and its state is recorded and multiplied out
-    > Back to here, to print the result
-
-    This function eventually prints out a 5 x 5 table containing eight values,
-    4 alloted for each dealta damage,delta cards and shield for every offensive and
-    defensive plan I covered.
-    '''
     r = rvr(a,b,c,d,e,f)
     v = vrr(a,b,c,d,e,f)
-    print("Attack |Defensive Measure |DMG done |Card loss |Shield loss |DMG you heal |Cards you gain")
-    print("R>V>R  |Guard Rearguard   |{:^7.3}  |{:^8.3}  |   {:.5}*   |{:^8.2}     |{:^11}     "\
-    .format(float(r[0][0]),float(r[0][1]),r[0][2],float(r[0][3]),float(r[0][4])))
-    print("R>V>R  |Guard Vanguard    |{:^7.3}  |{:^8.3}  |   {:.5}    |{:^8.2}     |{:^11}     "\
-    .format(float(r[1][0]),float(r[1][1]),r[1][2],float(r[1][3]),float(r[1][4])))
-    print("V>R>R  |Guard Rearguard   |{:^7.3}  |{:^8.3}  |   {:.5}    |{:^8.2}     |{:^11}     "\
-    .format(float(v[0][0]),float(v[0][1]),v[0][2],float(v[0][3]),float(v[0][4])))
-    print("V>R>R  |Guard Vanguard    |{:^7.3}  |{:^8.3}  |   {:.5}*   |{:^8.2}     |{:^11}     "\
-    .format(float(v[1][0]),float(v[1][1]),v[1][2],float(v[1][3]),float(v[1][4])))
+    print("Attack |Defensive Measure    |DMG done |Card loss |Shield loss |DMG you heal |Cards you gain")
+    print("-------|---------------------|---------|----------|------------|-------------|--------------")
+    print("R>V>R  |Let Vanguard Through | {:^7.3} | {:^8.4} |   {}    |  {:^8.3}   |{:^11.3}"\
+    .format(float(r[0][0]),float(r[0][1]),(int)(r[0][2]),float(r[0][3]),float(r[0][4])))
+    print("R>V>R  |Let Rearguard Through| {:^7.3} | {:^8.4} |   {}    |  {:^8.3}   |{:^11.3}"\
+    .format(float(r[1][0]),float(r[1][1]),(int)(r[1][2]),float(r[1][3]),float(r[1][4])))
+    print("V>R>R  |Let Vanguard Through | {:^7.3} | {:^8.4} |   {}    |  {:^8.3}   |{:^11.3}"\
+    .format(float(v[0][0]),float(v[0][1]),(int)(v[0][2]),float(v[0][3]),float(v[0][4])))
+    print("V>R>R  |Let Rearguard Through| {:^7.3} | {:^8.4} |   {}    |  {:^8.3}   |{:^11.3}"\
+    .format(float(v[1][0]),float(v[1][1]),(int)(v[1][2]),float(v[1][3]),float(v[1][4])))
     return
 
-def assume():
-    print("> No stand triggers.")
-    print("> Opponent guards one attack only")
-    print("> No effects")
-    print("> 2/2/2 field")
-    print("> Deck is sufficiently randomized")
-    print("> End of assumptions")
-    return
+################################################################################
+#
+#           End of Calculations. Start of User Interface.
+#
+################################################################################
 
-def main():
-    print("Type in compareTrig([a],[b],[c],[d],[e],[f])\n")
-    print("[a]:               Number of Heal Triggers in your deck")
-    print("[b]:           Number of Critical Triggers in your deck")
-    print("[c]:               Number of Draw Triggers in your deck")
-    print("[d]:     Number of Heal Triggers in your opponents deck")
-    print("[e]: Number of Critical Triggers in your opponents deck")
-    print("[f]:     Number of Draw Triggers in your opponents deck")
-    print("\n Type in assume() for assumptions made in calculation")
-    print("\n                                        BramptonBooster")
-    pass
+from tkinter import *
+from tkinter import ttk
 
-if __name__ == '__main__':
-    main()
+def calculate(*args):
+    try:
+        b = (int)(ycrit.get())
+        a = (int)(yheal.get())
+        c = (int)(ydraw.get())
+        e = (int)(fcrit.get())
+        d = (int)(fheal.get())
+        f = (int)(fdraw.get())
+        if (a+b+c != 16 | d+e+f != 16): err.set("ERROR: not 16 triggers")
+        else:
+            r = rvr(a,b,c,d,e,f)
+            v = vrr(a,b,c,d,e,f)
+            dam1.set(float(r[0][0]))
+            car1.set(float(r[0][1]))
+            shi1.set(float(r[0][2]))
+            dam2.set(float(r[1][0]))
+            car2.set(float(r[1][1]))
+            shi2.set(float(r[1][2]))
+            dam3.set(float(v[0][0]))
+            car3.set(float(v[0][1]))
+            shi3.set(float(v[0][2]))
+            dam4.set(float(v[1][0]))
+            car4.set(float(v[1][1]))
+            shi4.set(float(v[1][2]))
+            hea.set(float(r[0][3]))
+            gai.set(float(r[0][4]))
+            err.set("")
+    except ValueError:
+        err.set("ERROR: Non-numerical Input")
+        pass
+
+from tkinter import messagebox
+def assume(*args):
+    try:
+        messagebox.showinfo("Assumptions","""
+    ASSUMPTIONS MADE
+        No stand triggers
+        Opponent guards one attack only
+        No effects
+        2/2/2 field
+        Deck is sufficiently randomized
+        Opponent guards optimally
+        End of assumptions
+
+    MADE BY
+        Brampton Booster
+
+        bramptonbooster.wordpress.com
+        https://github.com/NanoSmasher/prob-cfvg
+        bramptonbooster@hotmail.ca
+
+    THANKS FOR USING MY PROGRAM!
+        """)
+    except ValueError:
+        pass
+
+# Main window
+root = Tk()
+root.title("Trigger Advantage Comparison - Created by Brampton Booster")
+mainframe = ttk.Frame(root, padding="3 3 12 12")
+mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+mainframe.columnconfigure(0, weight=1)
+mainframe.rowconfigure(0, weight=1)
+
+# Labels
+ttk.Label(mainframe, text="# Crit Triggers").grid(column=2, row=1)
+ttk.Label(mainframe, text="# Heal Triggers").grid(column=3, row=1)
+ttk.Label(mainframe, text="# Draw Triggers").grid(column=4, row=1)
+ttk.Label(mainframe, text="Your trig ratios").grid(column=1, row=2,)
+ttk.Label(mainframe, text="Your Opponents'").grid(column=1, row=3)
+ttk.Label(mainframe, text="Attack Plan").grid(column=1, row=5)
+ttk.Label(mainframe, text="Defensive Measure").grid(column=2, row=5)
+ttk.Label(mainframe, text="DMG done").grid(column=3, row=5)
+ttk.Label(mainframe, text="Card loss").grid(column=4, row=5)
+ttk.Label(mainframe, text="Shield loss").grid(column=5, row=5)
+ttk.Label(mainframe, text="R>V>R").grid(column=1, row=6)
+ttk.Label(mainframe, text="R>V>R").grid(column=1, row=7)
+ttk.Label(mainframe, text="V>R>R").grid(column=1, row=8)
+ttk.Label(mainframe, text="V>R>R").grid(column=1, row=9)
+ttk.Label(mainframe, text="Let Vanguard Through").grid(column=2, row=6)
+ttk.Label(mainframe, text="Let Rearguard Through").grid(column=2, row=7)
+ttk.Label(mainframe, text="Let Vanguard Through").grid(column=2, row=8)
+ttk.Label(mainframe, text="Let Rearguard Through").grid(column=2, row=9)
+ttk.Label(mainframe, text="Damage you heal").grid(column=1, row=11)
+ttk.Label(mainframe, text="Cards you draw").grid(column=1, row=12)
+
+# Input
+ycrit = StringVar()
+yheal = StringVar()
+ydraw = StringVar()
+fcrit = StringVar()
+fheal = StringVar()
+fdraw = StringVar()
+
+you_c = ttk.Entry(mainframe, width=8, textvariable=ycrit)
+you_c.grid(column=2, row=2)
+you_h = ttk.Entry(mainframe, width=8, textvariable=yheal)
+you_h.grid(column=3, row=2)
+you_d = ttk.Entry(mainframe, width=8, textvariable=ydraw)
+you_d.grid(column=4, row=2)
+foe_c = ttk.Entry(mainframe, width=8, textvariable=fcrit)
+foe_c.grid(column=2, row=3)
+foe_h = ttk.Entry(mainframe, width=8, textvariable=fheal)
+foe_h.grid(column=3, row=3)
+foe_d = ttk.Entry(mainframe, width=8, textvariable=fdraw)
+foe_d.grid(column=4, row=3)
+##
+
+# Output
+dam1 = StringVar()
+car1 = StringVar()
+shi1 = StringVar()
+dam2 = StringVar()
+car2 = StringVar()
+shi2 = StringVar()
+dam3 = StringVar()
+car3 = StringVar()
+shi3 = StringVar()
+dam4 = StringVar()
+car4 = StringVar()
+shi4 = StringVar()
+hea = StringVar()
+gai = StringVar()
+err = StringVar()
+
+ttk.Label(mainframe, textvariable=dam1).grid(column=3, row=6)
+ttk.Label(mainframe, textvariable=car1).grid(column=4, row=6)
+ttk.Label(mainframe, textvariable=shi1).grid(column=5, row=6)
+ttk.Label(mainframe, textvariable=dam2).grid(column=3, row=7)
+ttk.Label(mainframe, textvariable=car2).grid(column=4, row=7)
+ttk.Label(mainframe, textvariable=shi2).grid(column=5, row=7)
+ttk.Label(mainframe, textvariable=dam3).grid(column=3, row=8)
+ttk.Label(mainframe, textvariable=car3).grid(column=4, row=8)
+ttk.Label(mainframe, textvariable=shi3).grid(column=5, row=8)
+ttk.Label(mainframe, textvariable=dam4).grid(column=3, row=9)
+ttk.Label(mainframe, textvariable=car4).grid(column=4, row=9)
+ttk.Label(mainframe, textvariable=shi4).grid(column=5, row=9)
+ttk.Label(mainframe, textvariable=hea).grid(column=2, row=11)
+ttk.Label(mainframe, textvariable=gai).grid(column=2, row=12)
+ttk.Label(mainframe, textvariable=err).grid(column=5, row=11)
+
+# Button and Finishing Touches
+ttk.Button(mainframe, text="Calculate", command=calculate).grid(column=5, row=12, sticky=(E,S))
+ttk.Button(mainframe, text="About", command=assume).grid(column=5, row=13, sticky=(E,S))
+for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
+root.bind('<Return>', calculate)
+you_c.focus()
+##
+
+root.mainloop()
