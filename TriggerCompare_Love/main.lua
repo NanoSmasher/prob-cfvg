@@ -20,8 +20,8 @@ function love.load()
 	newrow = 30		newcol = 150	
 	
 	--numbers used for calculations
-	ycrit = 0	yheal = 0	ydraw = 0
-	fcrit = 0	fheal = 0	fdraw = 0
+	ycrit = 12	yheal = 4	ydraw = 0
+	fcrit = 12	fheal = 4	fdraw = 0
 	
 	--numbers resulting from calculations
 	dam1 = ''	car1 = ''	shi1 = ''
@@ -69,8 +69,8 @@ function love.mousepressed(x, y, button)
 		elseif (on=='fdraw-' and fdraw>0) then fdraw = fdraw - 1 changed = true
 		elseif (on=='enter')  then
 			if (ycrit+yheal+ydraw==16 and fcrit+fheal+fdraw==16) then
-				--the very long fetch
-				dam1,car1,shi1,dam2,car2,shi2,dam3,car3,shi3,dam4,car4,shi4,heal,gain = calculate(yheal,ycrit,ydraw,fcrit,fheal,fdraw)			
+				--the very very long fetch
+				dam1,car1,shi1,dam2,car2,shi2,dam3,car3,shi3,dam4,car4,shi4,heal,gain = calculate(yheal,ycrit,ydraw,fheal,fcrit,fdraw)			
 				changed = false
 				err = ''
 			else err = 'ERROR' end
