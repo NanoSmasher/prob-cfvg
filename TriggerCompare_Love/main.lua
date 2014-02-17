@@ -1,11 +1,11 @@
 require "trigcompare"
---The actual heavy work
+-- The actual heavy work
 
 -- love.load			:	load variables and initializes object and static
 -- object 				:	information about the buttons and button locations
 -- static 				:	static text labels
 -- input & output 		:	display text labels that change based on events.
--- love.keyreleased 	:	[Esc]  to quit the program easily
+-- love.keyreleased 	:	[Esc]  to quit the program easily, [C] to copy result onto Clipboard
 -- love.draw 			:	Draws all the stuff
 -- love.mousepressed	:	Changes the input and output.
 -- sethover				:	determines whether the click of {mousepressed} matches with an {object} bounds
@@ -14,7 +14,7 @@ function love.load()
 	love.window.setMode(700,400)
 	love.window.setTitle("Trigger Advantage Comparison - Created by Brampton Booster")
 	screen = 'main'
-	changed = false
+	changed = true
 
 	--Constants for table-like organization
 	newrow = 30		newcol = 150	
@@ -24,11 +24,11 @@ function love.load()
 	fcrit = 12	fheal = 4	fdraw = 0
 	
 	--numbers resulting from calculations
-	dam1 = ''	car1 = ''	shi1 = ''
-	dam2 = ''	car2 = ''	shi2 = ''
-	dam3 = ''	car3 = ''	shi3 = ''
-	dam4 = ''	car4 = ''	shi4 = ''
-	heal = ''	gain = ''	err = ''
+	dam1 = '0'	car1 = '0'	shi1 = '0'
+	dam2 = '0'	car2 = '0'	shi2 = '0'
+	dam3 = '0'	car3 = '0'	shi3 = '0'
+	dam4 = '0'	car4 = '0'	shi4 = '0'
+	heal = '0'	gain = '0'	err = ''
 	
 	--initialize the other stuff
 	object()
@@ -37,6 +37,23 @@ end
 
 function love.keyreleased(key)
 	if key == "escape" then love.event.push("quit") end
+	if (key == "c" and changed == false) then love.system.setClipboardText(
+
+ycrit..'C/'..yheal..'H/'..ydraw.."D vs "..fcrit..'C/'..fheal..'H/'..fdraw.."D \n"..
+[[
+Attack Plan		Defensive Measure	Damage	Cards	Shield
+R>V>R			Let VG Through		]]..string.format("%.5f", dam1)..string.format("	%.4f", car1)..string.format("	%.0f", shi1)..[[
+
+R>V>R			Let RG Through		]]..string.format("%.5f", dam2)..string.format("	%.4f", car2)..string.format("	%.0f", shi2)..[[ 
+V>R>R			Let VG Through		]]..string.format("%.5f", dam3)..string.format("	%.4f", car3)..string.format("	%.0f", shi3)..[[
+
+V>R>R			Let RG Through		]]..string.format("%.5f", dam4)..string.format("	%.4f", car4)..string.format("	%.0f", shi4)..[[
+
+Damage you heal]]..string.format("	%.4f", heal)..[[
+
+Cards you draw]]..string.format("	%.4f", gain).."\n \n (c) bramptonbooster.wordpress.com"
+) end
+
 end
 
 function love.draw()
@@ -134,6 +151,11 @@ function input()
 		love.graphics.rectangle("fill",0,0,700,400)
 		love.graphics.setColor(0,0,0)
 		love.graphics.print([[
+PROGRAM:
+
+    Displays advantages of two competing trigger ratios
+	Hit "c" on your keyboard to copy the results easily
+	
 ASSUMPTIONS MADE:
 
     No stand triggers
@@ -151,7 +173,7 @@ MADE BY:
     bramptonbooster.wordpress.com
     bramptonbooster@hotmail.ca
     
-	Copyright 2014 (c): MIT License
+    Copyright 2014 (c): MIT License
 
     THANKS FOR USING MY PROGRAM!
     ]],210,40)
@@ -162,20 +184,20 @@ end
 
 function output()
 	love.graphics.setColor(255,0,0)
-	love.graphics.print(dam1, 2*newcol, 5*newrow)
-	love.graphics.print(car1, 3*newcol, 5*newrow)
-	love.graphics.print(shi1, 4*newcol, 5*newrow)
-	love.graphics.print(dam2, 2*newcol, 6*newrow)
-	love.graphics.print(car2, 3*newcol, 6*newrow)
-	love.graphics.print(shi2, 4*newcol, 6*newrow)
-	love.graphics.print(dam3, 2*newcol, 7*newrow)
-	love.graphics.print(car3, 3*newcol, 7*newrow)
-	love.graphics.print(shi3, 4*newcol, 7*newrow)
-	love.graphics.print(dam4, 2*newcol, 8*newrow)
-	love.graphics.print(car4, 3*newcol, 8*newrow)
-	love.graphics.print(shi4, 4*newcol, 8*newrow)
-	love.graphics.print(heal, newcol, 10*newrow)
-	love.graphics.print(gain, newcol, 11*newrow)
+	love.graphics.print(string.format("%.5f", dam1), 2*newcol, 5*newrow)
+	love.graphics.print(string.format("%.4f", car1), 3*newcol, 5*newrow)
+	love.graphics.print(string.format("%.0f", shi1), 4*newcol, 5*newrow)
+	love.graphics.print(string.format("%.5f", dam2), 2*newcol, 6*newrow)
+	love.graphics.print(string.format("%.4f", car2), 3*newcol, 6*newrow)
+	love.graphics.print(string.format("%.0f", shi2), 4*newcol, 6*newrow)
+	love.graphics.print(string.format("%.5f", dam3), 2*newcol, 7*newrow)
+	love.graphics.print(string.format("%.4f", car3), 3*newcol, 7*newrow)
+	love.graphics.print(string.format("%.0f", shi3), 4*newcol, 7*newrow)
+	love.graphics.print(string.format("%.5f", dam4), 2*newcol, 8*newrow)
+	love.graphics.print(string.format("%.4f", car4), 3*newcol, 8*newrow)
+	love.graphics.print(string.format("%.0f", shi4), 4*newcol, 8*newrow)
+	love.graphics.print(string.format("%.4f", heal), newcol, 10*newrow)
+	love.graphics.print(string.format("%.4f", gain), newcol, 11*newrow)
 	love.graphics.setColor(255,255,255)
 end
 
@@ -190,11 +212,11 @@ function static()
 	love.graphics.print("# Crit Triggers", newcol, 0)
 	love.graphics.print("# Heal Triggers", 2*newcol, 0)
 	love.graphics.print("# Draw Triggers", 3*newcol, 0)
-	love.graphics.print("Your Trig ratios", 0, newrow)
-	love.graphics.print("Your Opponents", 0, 2*newrow)
-	love.graphics.print("Attack Plan", 0, 4*newrow)
-	love.graphics.print("Defensive Measure", newcol, 4*newrow)
-	love.graphics.print("DMG done", 2*newcol, 4*newrow)
+	love.graphics.print("Your Trigger ratios", 0, newrow)
+	love.graphics.print("Your Opponents ratios", 0, 2*newrow)
+	love.graphics.print("You Attack Plan", 0, 4*newrow)
+	love.graphics.print("Their Defensive Plan", newcol, 4*newrow)
+	love.graphics.print("Damage done", 2*newcol, 4*newrow)
 	love.graphics.print("Card loss", 3*newcol, 4*newrow)
 	love.graphics.print("Shield loss", 4*newcol, 4*newrow)
 	love.graphics.print("R>V>R", 0, 5*newrow)

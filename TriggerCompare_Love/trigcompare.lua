@@ -29,7 +29,7 @@ function v_guardRG(hT,cT,dT,ht,ct,dt)	-- Returns expected outcome for VRR and gu
     drivecheck = drive(hT,cT,dT)    state = {0,0,0,0,0}    d1 = dmg1(ht,ct,dt)    d2 = dmg2(ht,ct,dt)    d3 = dmg3(ht,ct,dt)    state[1] = state[1] + drivecheck[1][1][4]*d1[1]
     state[1] = state[1] + drivecheck[1][2][4]*d2[1]    state[1] = state[1] + drivecheck[1][3][4]*d3[1]    state[2] = state[2] + (drivecheck[1][1][1])*(2)
     state[2] = state[2] + (drivecheck[1][1][2])*((1-d1[2])*3+d1[2]*2)    state[2] = state[2] + (drivecheck[1][1][3])*(3)    state[2] = state[2] + (drivecheck[1][2][2])*((d2[2][1])*3+(d2[2][2]+d2[2][3])*2)
-    state[2] = state[2] + (drivecheck[1][2][3])*((d2[2][1]+d2[2][2])*3+(d2[2][1])*2)    state[2] = state[2] + (drivecheck[1][3][3])*((d3[2][1]+d3[2][2])*3+(d3[2][3]+d3[2][4])*2)
+    state[2] = state[2] + (drivecheck[1][2][3])*((d2[2][1]+d2[2][2])*3+(d2[2][3])*2)    state[2] = state[2] + (drivecheck[1][3][3])*((d3[2][1]+d3[2][2])*3+(d3[2][3]+d3[2][4])*2)
     recover = 0    recover = recover + drivecheck[1][1][4]*d1[3]    recover = recover + drivecheck[1][2][4]*d2[3]    recover = recover + drivecheck[1][3][4]*d3[3]    state[2] = state[2] - recover
     state[3] = state[3] + (drivecheck[1][1][1])*((1-d1[2])*4+d1[2]*2)    state[3] = state[3] + (drivecheck[1][1][2])*((1-d1[2])*5+d1[2]*3)    state[3] = state[3] + (drivecheck[1][1][3])*((1-d1[2])*6+d1[2]*4)
     state[3] = state[3] + (drivecheck[1][2][2])*(d2[2][1]*5+d2[2][2]*3+d2[2][3]*1)    state[3] = state[3] + (drivecheck[1][2][3])*(d2[2][1]*6+d2[2][2]*4+d2[2][3]*2)
