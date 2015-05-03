@@ -49,7 +49,7 @@ V>R>R			Let VG Through		]]..string.format("%.5f", dam3)..string.format("	%.4f", 
 
 V>R>R			Let RG Through		]]..string.format("%.5f", dam4)..string.format("	%.4f", car4)..string.format("	%.0f", shi4)..[[
 
-Damage you heal]]..string.format("	%.4f", heal)..[[
+Damage you heal]]..string.format("	%.5f", heal)..[[
 
 Cards you draw]]..string.format("	%.4f", gain).."\n \n (c) bramptonbooster.wordpress.com"
 ) end
@@ -63,10 +63,10 @@ function love.draw()
 	love.graphics.setColor(255,255,255)
 end
 
-function love.mousepressed(x, y, button)
-	if (button == "l" and screen == 'main') then
+function love.mousepressed(x, y, b)
+	if (b == "l" and screen == 'main') then
 		--figure out if the cursor is over a button and if so which one
-		on = sethover(x,y)
+		local on = sethover(x,y)
 		
 		--huge conditional branch
 		if 	   (on=='none')   then return
@@ -98,7 +98,7 @@ function love.mousepressed(x, y, button)
 		output()
 	
 	--close the about screen
-	elseif (button == "l" and screen == 'about') then screen = 'main'
+	elseif (b == "l" and screen == 'about') then screen = 'main'
 	end
 end
 
@@ -154,12 +154,12 @@ function input()
 PROGRAM:
 
     Displays advantages of two competing trigger ratios
-	Hit "c" on your keyboard to copy the results easily
+	Hit "c" on the keyboard to copy results to clipboard
 	
 ASSUMPTIONS MADE:
 
     No stand triggers
-    Opponent guards one attack only
+    Opponent lets one attack through
     No effects
     2/2/2 field
     Deck is sufficiently randomized
@@ -196,7 +196,7 @@ function output()
 	love.graphics.print(string.format("%.5f", dam4), 2*newcol, 8*newrow)
 	love.graphics.print(string.format("%.4f", car4), 3*newcol, 8*newrow)
 	love.graphics.print(string.format("%.0f", shi4), 4*newcol, 8*newrow)
-	love.graphics.print(string.format("%.4f", heal), newcol, 10*newrow)
+	love.graphics.print(string.format("%.5f", heal), newcol, 10*newrow)
 	love.graphics.print(string.format("%.4f", gain), newcol, 11*newrow)
 	love.graphics.setColor(255,255,255)
 end

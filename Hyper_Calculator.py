@@ -11,8 +11,8 @@ def Odds(a,b,d):
 
     Parent: HGC()
     Called when: sample size is 1
-    Why: Prevents factorials from being made, as it is unnecessay. Of course,
-    computers are so fast this method probably isn't necessary anyways.
+    Why: Prevents factorials from being made, as it is unnecessary. Of course,
+    computers are so fast this method probably isn't necessary anyway.
     '''
     if d == 1: return Fraction(b,a)
     else: return Fraction(a-b,a)
@@ -29,7 +29,7 @@ def C(n, r):
     # return math.factorial(n) / (math.factorial(r) * math.factorial(n - r)
 
 def HGC(a,b,c,d):
-    '''Hyper Ceometric Calculator
+    '''Hyper Geometric Calculator
 
     Variables
     a: Population size
@@ -44,11 +44,11 @@ def HGC(a,b,c,d):
 def HGCC(a,b,c,d,find="="):
     '''Hyper Geometric Cumulative Calculator
 
-    Excecutes HGC() multiple times, based on the "find" modifier
+    Calls HGC() multiple times, based on the "find" modifier
     Variables
 
     a: Population size
-    b: Possible sucesses
+    b: Possible successes
     c: Sample size
     d: # of successes
     find: modifies variable d. Available inputs; < ,<= ,> , >=, =
@@ -76,11 +76,11 @@ def HGCC(a,b,c,d,find="="):
 def quickodds(a,b,c,d):
     '''Displays all probabilities of a given value
 
-    Calls all modfiers of HGCC()
+    Calls all modifiers of HGCC()
 
     Variables
     a: Population size
-    b: Possible sucesses
+    b: Possible successes
     c: Sample size
     d: # of successes
     '''
@@ -91,5 +91,5 @@ def quickodds(a,b,c,d):
     print("Chance to get more than or equal to {}: {}".format(d,HGCC(a,b,c,d,find=">=")))
 
 def cascadeodds(a,b,c):
-    '''Print exact odds for each # of sucesses'''
+    '''Print exact odds for each # of successes'''
     for i in range(0,c+1): print("Chance to get exactly {}: {}".format(i,HGC(a,b,c,i)))

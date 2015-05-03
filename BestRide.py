@@ -147,7 +147,7 @@ def CheckAll(text = "norm"):
     for a in range(1,32):
         for b in range(1,32):
             for c in range(1,32):
-                if (a+b+c == 32) & (a>4) & (b>4):
+                if (a+b+c == 32) & (a>4) & (b>4) & (c==13):
                     combined+=1
                     tot = targetf(a,b,c,text)
                     Complete(tot,a,b,c)

@@ -407,7 +407,7 @@ def assume(*args):
         messagebox.showinfo("Assumptions","""
     ASSUMPTIONS MADE
         No stand triggers
-        Opponent guards one attack only
+        Opponent lets one attack through
         No effects
         2/2/2 field
         Deck is sufficiently randomized
